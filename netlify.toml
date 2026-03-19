@@ -1,0 +1,31 @@
+# Netlify Configuration
+# Place this in the root of your repository
+
+[build]
+  command = "npm install"
+  functions = "functions"
+  publish = "src"
+
+[dev]
+  command = "npm run dev"
+  port = 8888
+
+# Redirects for single-page app behavior
+[[redirects]]
+  from = "/results"
+  to = "/results.html"
+  status = 200
+
+[[redirects]]
+  from = "/stage2"
+  to = "/stage2.html"
+  status = 200
+
+[[redirects]]
+  from = "/thankyou"
+  to = "/thankyou.html"
+  status = 200
+
+# Environment variables (set these in Netlify UI)
+# HUBSPOT_PRIVATE_APP_TOKEN = your_token_here
+# HUBSPOT_PORTAL_ID = your_portal_id_here
