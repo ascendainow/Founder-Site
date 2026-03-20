@@ -1,0 +1,249 @@
+NETLIFY FORMS & FUNCTIONS - DEPLOYMENT GUIDE
+=============================================
+
+PRODUCTION-READY CODE PACKAGE
+All files needed to deploy the Founder Bottleneck Diagnostic funnel on Netlify
+
+FILES INCLUDED:
+===============
+
+FORMS (HTML):
+- src-index.html          → Stage 1 Indicator Form (7 questions + contact info)
+- src-stage2.html         → Stage 2 Diagnostic Form (12 questions, paid)
+- src-results.html        → Dynamic Results Pages (Green/Yellow/Red)
+- src-thankyou.html       → Thank You Page with Calendly embed
+- src-styles.css          → Stylesheet for all pages
+
+FUNCTIONS (Node.js):
+- functions-scoring-logic.js      → Calculate score (Green/Yellow/Red)
+- functions-hubspot-sync.js       → Create/update HubSpot contact
+- functions-fetch-user-result.js  → Retrieve user score from HubSpot
+
+CONFIG:
+- netlify.toml            → Netlify build configuration
+- package.json            → Dependencies
+
+QUICK START (5 STEPS)
+====================
+
+Step 1: Create GitHub Repository
+  1. Create new repo: "founder-diagnostic"
+  2. Clone to your machine
+  3. Create folder structure:
+     founder-diagnostic/
+     ├── src/
+     ├── functions/
+     └── (other config files in root)
+
+Step 2: Add Files to Repository
+  src/ folder:
+    - index.html (rename from src-index.html)
+    - stage2.html (rename from src-stage2.html)
+    - results.html (rename from src-results.html)
+    - thankyou.html (rename from src-thankyou.html)
+    - styles.css (rename from src-styles.css)
+
+  functions/ folder:
+    - scoring-logic.js (rename from functions-scoring-logic.js)
+    - hubspot-sync.js (rename from functions-hubspot-sync.js)
+    - fetch-user-result.js (rename from functions-fetch-user-result.js)
+
+  Root folder:
+    - netlify.toml
+    - package.json
+    - .gitignore (add: node_modules/)
+
+Step 3: Get HubSpot Credentials
+  1. Log into HubSpot
+  2. Go to Settings > Integrations > Private apps
+  3. Create new private app: "Founder Diagnostic"
+  4. Add scopes: crm.objects.contacts.read, crm.objects.contacts.write
+  5. Generate token and copy it
+  6. Find your Portal ID: Settings > Account > Portal ID
+
+Step 4: Deploy to Netlify
+  1. Go to netlify.com
+  2. Click "New site from Git"
+  3. Connect GitHub and select "founder-diagnostic" repo
+  4. Configure build:
+     Build command: npm install
+     Publish directory: src
+     Functions directory: functions
+  5. Click "Deploy"
+  6. Once deployed, go to Site Settings
+
+Step 5: Add Environment Variables
+  In Netlify UI:
+    Site Settings → Build & Deploy → Environment Variables
+    
+  Add two variables:
+    Key: HUBSPOT_PRIVATE_APP_TOKEN
+    Value: [paste your HubSpot private app token]
+    
+    Key: HUBSPOT_PORTAL_ID
+    Value: [paste your HubSpot portal ID]
+  
+  5. Trigger redeploy (or push new commit to GitHub)
+
+TESTING
+========
+
+1. Live URL: https://your-netlify-site.netlify.app/
+
+2. Test Stage 1 Form:
+   - Fill out indicator form with test data
+   - Submit
+   - Should redirect to results page with email param
+   - Verify contact created in HubSpot
+
+3. Test Results Pages:
+   - Green (score 7-14): Click payment link
+   - Yellow (score 15-24): Click payment link
+   - Red (score 25-35): Click payment link
+   - All should link to your HubSpot payment page
+
+4. Test Payment Flow:
+   - Use test Stripe card: 4242 4242 4242 4242
+   - Complete payment
+   - Should redirect to Stage 2 form
+   - Fill Stage 2 and submit
+   - Should redirect to thank you page with Calendly
+
+5. Verify HubSpot:
+   - Check Contacts in HubSpot
+   - Verify all properties populated:
+     * firstname, lastname, email, company
+     * revenue_range, team_size
+     * q1_score through q7_score
+     * indicator_total_score, indicator_result_category
+     * paid_diagnostic_purchased
+
+PRODUCTION URLS
+================
+
+Once deployed, your live URLs are:
+
+Homepage/Indicator:
+  https://your-netlify-site.netlify.app/
+
+Results Pages (auto-route):
+  https://your-netlify-site.netlify.app/results.html?email=user@company.com
+
+Stage 2 Diagnostic:
+  https://your-netlify-site.netlify.app/stage2.html?email=user@company.com
+
+Thank You:
+  https://your-netlify-site.netlify.app/thankyou.html
+
+Payment (external HubSpot):
+  https://payments-na2.hubspot.com/payments/purchase/hscs_na2_...
+
+TROUBLESHOOTING
+================
+
+Issue: "Missing HubSpot credentials"
+Solution: Verify environment variables are set in Netlify UI and site redeployed
+
+Issue: Contact not created in HubSpot
+Solution: Check browser console for error messages, verify API token has correct scopes
+
+Issue: Results page shows "Unable to load results"
+Solution: Verify email param in URL matches contact email in HubSpot
+
+Issue: Calendly not loading
+Solution: Verify Calendly iframe URL is correct (https://calendly.com/soyini-...)
+
+CUSTOMIZATION
+==============
+
+Update HubSpot Payment Link:
+- In results.html: Replace payment URL in all three buttons
+- Ensure URL points to your HubSpot payment page
+
+Update Calendly Link:
+- In thankyou.html: Replace iframe src with your Calendly link
+
+Update Thank You Contact Info:
+- In thankyou.html: Update email and phone number
+
+Update Question Text:
+- In index.html or stage2.html: Edit question-text paragraphs
+
+Update Message Text:
+- In results.html: Edit message divs for Green/Yellow/Red
+
+MONITORING
+===========
+
+HubSpot Workflow (Optional):
+- Create workflow: "Mark Paid Diagnostic Purchased"
+- Trigger: When paid_diagnostic_purchased = "Yes"
+- Action: Send email notification
+
+Analytics:
+- Track conversions: Indicator → Results → Payment → Diagnostic → Thank You
+- Monitor in HubSpot Contacts or Google Analytics
+
+SUPPORT
+========
+
+If you encounter issues:
+
+1. Check Netlify logs:
+   Site Settings > Build & Deploy > Deploy log
+
+2. Check Function logs:
+   Functions > [function name] > Logs
+
+3. Verify HubSpot API:
+   Settings > Integrations > API access
+
+4. Browser DevTools:
+   - Check Console for JavaScript errors
+   - Check Network tab for API responses
+
+NEXT STEPS
+===========
+
+Once live and tested:
+
+1. Update your website homepage to link to the diagnostic:
+   href="https://your-netlify-site.netlify.app/"
+
+2. Add to email campaigns with link
+
+3. Promote on social media
+
+4. Monitor conversion rates and optimize messaging
+
+5. A/B test different question phrasings or CTA text
+
+6. Add Google Analytics to track user journey
+
+PRODUCTION CHECKLIST
+=====================
+
+□ HubSpot private app created with correct scopes
+□ Environment variables added to Netlify
+□ All files deployed to GitHub and Netlify
+□ Test form submissions complete
+□ Contacts created in HubSpot with correct properties
+□ Payment link tested
+□ Results pages display correctly (Green/Yellow/Red)
+□ Calendly scheduling working
+□ Mobile responsive testing complete
+□ Thank you email configured (optional)
+□ Analytics tracking added (optional)
+□ Redirect from homepage to diagnostic active
+
+CONTACT BRILLIANT CORNERS INNOVATIONS
+======================================
+
+If you need support with this implementation:
+
+Email: soyini@brilliantcornersgroup.com
+Phone: 240-498-2499
+Website: www.brilliantcornersgroup.com
+
+Questions about HubSpot setup or Netlify deployment?
+Soyini and the team are here to help!

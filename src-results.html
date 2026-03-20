@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Results - Founder Bottleneck Diagnostic</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="loading" class="loading">
+        <p>Loading your results...</p>
+    </div>
+
+    <div id="results" class="results-container hidden"></div>
+
+    <div id="error" class="error hidden"></div>
+
+    <script>
+        async function loadResults() {
+            const params = new URLSearchParams(window.location.search);
+            const email = params.get('email');
+
+            if (!email) {
+                showError('Missing email parameter');
+                return;
+            }
+
+            try {
+                // Fetch user result from HubSpot
+                const response = await fetch(`/.netlify/functions/fetch-user-result?email=${encodeURIComponent(email)}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch results');
+                }
+
+                const data = await response.json();
+                renderResults(data);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Unable to load your results. Please try again.');
+            }
+        }
+
+        function renderResults(data) {
+            const { score, category } = data;
+            const resultsDiv = document.getElementById('results');
+
+            let html = `<div class="results-page results-${category.toLowerCase()}">`;
+
+            if (category === 'Green') {
+                html += `
+                    <div class="results-header green-header">
+                        <h1>Your Operations Are Structured</h1>
+                        <p class="score">Score: ${score}/35</p>
+                    </div>
+
+                    <div class="results-content">
+                        <div class="message green-message">
+                            <p>You've built solid operational foundations. Your team knows what to do when you're not in the room. This is the sweet spot for sustainable, scalable growth.</p>
+                        </div>
+
+                        <div class="insights">
+                            <h2>Your Strengths</h2>
+                            <ul>
+                                <li>Strong operational clarity and delegation</li>
+                                <li>Team operates with confidence and autonomy</li>
+                                <li>Processes are documented and followed</li>
+                                <li>Organization is positioned for sustainable growth</li>
+                            </ul>
+                        </div>
+
+                        <div class="next-steps">
+                            <h2>Next Steps</h2>
+                            <p>While your operations are strong, every founder can optimize further. Unlock the full diagnostic for deeper insights into:</p>
+                            <ul>
+                                <li>Specific gaps in your operational framework</li>
+                                <li>Strategic recommendations for continued scaling</li>
+                                <li>Personalized action plan from our team</li>
+                                <li>30-minute debrief call with Soyini</li>
+                            </ul>
+                        </div>
+
+                        <a href="https://payments-na2.hubspot.com/payments/purchase/hscs_na2_S9u4qDSkuBYDRIfvUetjahx1XnaUNzANXd43AU7uXPDJLFzMsG9G2HHCtiROT1nw" class="btn btn-primary btn-large">Unlock Full Diagnostic - \$197</a>
+                    </div>
+                `;
+            } else if (category === 'Yellow') {
+                html += `
+                    <div class="results-header yellow-header">
+                        <h1>Your Business Depends on You</h1>
+                        <p class="score">Score: ${score}/35</p>
+                    </div>
+
+                    <div class="results-content">
+                        <div class="message yellow-message">
+                            <p>You've built a good business, but your team is overly dependent on your input. This limits growth and puts the company at risk. The good news: this is solvable.</p>
+                        </div>
+
+                        <div class="insights">
+                            <h2>What This Means</h2>
+                            <ul>
+                                <li>Your team constantly seeks your approval on decisions</li>
+                                <li>Operations stall when you're unavailable</li>
+                                <li>You're spending more time on operational tasks than strategy</li>
+                                <li>You're the bottleneck holding back growth</li>
+                            </ul>
+                        </div>
+
+                        <div class="next-steps">
+                            <h2>How to Fix It</h2>
+                            <p>Get the full diagnostic to identify:</p>
+                            <ul>
+                                <li>Exactly which decisions and processes depend on you</li>
+                                <li>Quick wins you can implement this month</li>
+                                <li>The specific role architecture that will free you up</li>
+                                <li>Your personalized roadmap to operational independence</li>
+                            </ul>
+                        </div>
+
+                        <a href="https://payments-na2.hubspot.com/payments/purchase/hscs_na2_S9u4qDSkuBYDRIfvUetjahx1XnaUNzANXd43AU7uXPDJLFzMsG9G2HHCtiROT1nw" class="btn btn-primary btn-large">Get the Full Diagnostic - \$197</a>
+                    </div>
+                `;
+            } else if (category === 'Red') {
+                html += `
+                    <div class="results-header red-header">
+                        <h1>Your Organization is Operational Chaos</h1>
+                        <p class="score">Score: ${score}/35</p>
+                    </div>
+
+                    <div class="results-content">
+                        <div class="message red-message">
+                            <p>Without you making decisions, nothing happens. Your team is constantly firefighting. Scaling this business as-is is nearly impossible. But this is your biggest opportunity for breakthrough change.</p>
+                        </div>
+
+                        <div class="insights">
+                            <h2>Your Current Reality</h2>
+                            <ul>
+                                <li>You're involved in almost every decision</li>
+                                <li>Your team doesn't have clear authority or processes</li>
+                                <li>Most of your time goes to operational tasks</li>
+                                <li>Strategy takes a back seat to daily firefighting</li>
+                                <li>You're exhausted and unsustainable</li>
+                            </ul>
+                        </div>
+
+                        <div class="next-steps">
+                            <h2>Your Path Forward</h2>
+                            <p>This is urgent but fixable. The full diagnostic includes:</p>
+                            <ul>
+                                <li>Complete operational audit revealing all dependencies</li>
+                                <li>Your personalized Clarity Brief with 90-day roadmap</li>
+                                <li>Specific role architecture for your organization</li>
+                                <li>Decision-making framework to delegate authority</li>
+                                <li>30-minute debrief call with Soyini to create your action plan</li>
+                            </ul>
+                        </div>
+
+                        <a href="https://payments-na2.hubspot.com/payments/purchase/hscs_na2_S9u4qDSkuBYDRIfvUetjahx1XnaUNzANXd43AU7uXPDJLFzMsG9G2HHCtiROT1nw" class="btn btn-primary btn-large">Get the Full Diagnostic - \$197</a>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+
+            resultsDiv.innerHTML = html;
+            document.getElementById('loading').classList.add('hidden');
+            resultsDiv.classList.remove('hidden');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            document.getElementById('loading').classList.add('hidden');
+            errorDiv.classList.remove('hidden');
+        }
+
+        // Load results on page load
+        loadResults();
+    </script>
+</body>
+</html>

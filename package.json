@@ -1,0 +1,25 @@
+{
+  "name": "founder-bottleneck-diagnostic",
+  "version": "1.0.0",
+  "description": "Founder Bottleneck Diagnostic Funnel - Netlify + HubSpot hybrid",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": [
+    "diagnostic",
+    "founder",
+    "bottleneck",
+    "hubspot",
+    "netlify"
+  ],
+  "author": "Brilliant Corners Innovations",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.11"
+  },
+  "devDependencies": {
+    "netlify-cli": "^14.0.0"
+  }
+}
